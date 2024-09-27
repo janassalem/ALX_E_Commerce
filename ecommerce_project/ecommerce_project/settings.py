@@ -77,10 +77,14 @@ WSGI_APPLICATION = 'ecommerce_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'janassalem$default',
+        'USER': 'janassalem',
+        'PASSWORD': '@#ExpsiJZ9:C=cR',
+        'HOST': 'janassalem.mysql.pythonanywhere-services.com',
     }
 }
+
 
 
 # Password validation
