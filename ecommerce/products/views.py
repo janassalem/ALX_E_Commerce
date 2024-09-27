@@ -5,6 +5,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
 from django.contrib.auth.models import User
 from .serializers import UserSerializer
+from django.http import HttpResponse
+from django.template import loader
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
@@ -28,3 +30,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+def members(request):
+  template = loader.get_template('myfirst.html')
+  return HttpResponse(template.render())
