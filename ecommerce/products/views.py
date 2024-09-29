@@ -1,36 +1,28 @@
-from rest_framework import viewsets
-from .models import Product
-from .serializers import ProductSerializer
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import viewsets
-from django.contrib.auth.models import User
-from .serializers import UserSerializer
-from django.http import HttpResponse
-from django.template import loader
+from rest_framework import generics
+from .models import Product, Category
+from .serializers import ProductSerializer, CategorySerializer
 
-class ProductViewSet(viewsets.ModelViewSet):
+class ProductListCreateView(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes = [IsAuthenticated]  # Only authenticated users can manage products
 
-    # Implement filtering
+class ProductRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+class CategoryListCreateView(generics.ListCreateAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+class ProductSearchView(generics.ListAPIView):
+    serializer_class = ProductSerializer
+
     def get_queryset(self):
         queryset = Product.objects.all()
-        category = self.request.query_params.get('category')
-        price_min = self.request.query_params.get('price_min')
-        price_max = self.request.query_params.get('price_max')
+        name = self.request.query_params.get('name', None)
+        category = self.request.query_params.get('category', None)
+        if name:
+            queryset = queryset.filter(name__icontains=name)
         if category:
-            queryset = queryset.filter(category=category)
-        if price_min:
-            queryset = queryset.filter(price__gte=price_min)
-        if price_max:
-            queryset = queryset.filter(price__lte=price_max)
+            queryset = queryset.filter(category__name__icontains=category)
         return queryset
-
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-def members(request):
-  template = loader.get_template('myfirst.html')
-  return HttpResponse(template.render())
